@@ -1,4 +1,5 @@
-const Todo = require('../model/todo')
+const Todo = require('../model/todo');
+
 
 
 // Create Todo
@@ -44,7 +45,7 @@ const getSingleTodo = async (req, res)=>{
         }
         res.status(todo);
     }catch(error){
-        res.status(500).json({error:"Server error"})
+        res.status(500).json({error:"Internal Server error"})
     }
 };
 
@@ -58,13 +59,13 @@ const updateTodo = async(req, res)=>{
             todoId,
             updateInfo,
             createdBy: req.user._id},
-            {new:true, runValidator:true}
+            {new:true}
         );
 
         if(!updatedTodo){
             return res.status(404).json({error:"Todo not found"});
         }
-        return res.status(200).json({message: updateTodo})
+        return res.status(200).json({message: updatedTodo})
     }catch(error){
         res.status(500).json({error: "Internal Server Error"})
     }

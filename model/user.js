@@ -15,10 +15,19 @@ const userSchema = new Schema({
         type: String,
         required: true,
         minLength: 5
-    }
-});
+    },
+    resetPasswordToken:{
+        type: String
+    },
+    resetPasswordExpires:{
+        type: String
+    },
+},  
+     { timestamps: true}
+
+);
 
 
-const userModel = model("user", userSchema)
+const User = model("user", userSchema)
 
-module.exports = userModel;
+module.exports = User;

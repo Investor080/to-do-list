@@ -1,5 +1,9 @@
-const userModel = require("../model/user")
-
+const User = require("../model/user");
+const bcrypt = require ('bcrypt');
+const jwt = require ("jsonwebtoken");
+const crypto = require ("crypto");
+const nodemailer = require ("nodemailer");
+require('dotenv').config();
 
 const SignUp = async(req, res)=>{
     try {
@@ -16,16 +20,16 @@ const SignUp = async(req, res)=>{
         if(!username || !email || !password){
             return res.status(400).json({error:"All fields are required"})
         }
-        const existingUser = await userModel.findOne(email)
+        const existingUser = await User.findOne ({username});
         if(existingUser){
-            res.json({error:"User Already exist"})
+            res.json({error:"Username is aleady taken "})
         }
         // Generate password
         const salt = await bcrypt.genSalt(10)
         const hashpassword = await bcrypt.hash(req.body.password, salt)
 
         // Create new user
-        const newUser = new userModel({
+        const newUser = new User({
             username:username,
             email:email,
             password:hashpassword
@@ -47,7 +51,7 @@ const Login = async(req, res)=>{
         if(!password){
             res.json({error:"Password is required"})
         }
-        const existingUser = await userModel.findOne({ username })
+        const existingUser = await User.findOne({ username })
         if(!existingUser){
             return res.status(404).json({error:"User Not Found"})
         }
@@ -55,21 +59,22 @@ const Login = async(req, res)=>{
         if(!passwordMatch){
             res.json({error:"Incorrect Password"})
         }
-        const user = new userModel({
+        const user = new User({
             username,
             password
         })
-
+        
         req.login(user, function(err){
             if(err){
                 return res.json(err)
             }
             passport.authenticate("local")(req, res, function(){
-                return res.status(200).json({message:""})
+                return res.status(200).json({message:"Login Successful"})
             })
         })
     } catch (error) {
-        
+        console.log(error)
+        res.status(500).json({error: "Internal Server Error"})
     }
 };
 
