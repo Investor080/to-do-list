@@ -81,7 +81,7 @@ const deleteTodo = async(req, res)=>{
         if(!deleteTodo){
             return res.status(404).json({error: "Todo not found"});
         }
-        return res.status(204).send();
+        return res.status(204).json(deleteTodo);
     } catch (error) {
         res.status(500).json({error:"Internal Server Error"})
     }
