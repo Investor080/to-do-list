@@ -1,6 +1,7 @@
 const User = require("../model/user");
 const bcrypt = require ('bcrypt');
 const jwt = require ("jsonwebtoken");
+const passport = require("passport");
 const crypto = require ("crypto");
 const nodemailer = require ("nodemailer");
 require('dotenv').config();
@@ -9,20 +10,20 @@ const SignUp = async(req, res)=>{
     try {
         const {username, email, password} = req.body
         if(!username){
-            res.json({error:"Username is required"})
+            return res.json({error:"Username is required"})
         }
         if(!email){
-            res.json({error:"Email is required"})
+            return res.json({error:"Email is required"})
         }
         if(!password){
-            res.json({error:"Password is required"})
+            return res.json({error:"Password is required"})
         }
         if(!username || !email || !password){
             return res.status(400).json({error:"All fields are required"})
         }
         const existingUser = await User.findOne ({username});
         if(existingUser){
-            res.json({error:"Username is aleady taken "})
+            return res.json({error:"Username is aleady taken "})
         }
         // Generate password
         const salt = await bcrypt.genSalt(10)
